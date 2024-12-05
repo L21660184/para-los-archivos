@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interfaz Oscura Funcional</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    /* General Reset */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #121212; /* Fondo oscuro */
+      color: #e0e0e0; /* Texto claro */
+      margin: 0;
+    }
+
+    /* Sidebar estilo oscuro */
+    .offcanvas {
+      background: #181818;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    .offcanvas .logo-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      border-bottom: 1px solid #333;
+    }
+
+    .offcanvas .logo-container img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .offcanvas .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #ff8c00;
+    }
+
+    .offcanvas .nav-link {
+      color: #d6d6d6;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 12px 20px;
+      text-decoration: none;
+      display: block;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .offcanvas .nav-link:hover {
+      color: #ff8c00;
+      background: #333;
+    }
+
+    .offcanvas .nav-link i {
+      margin-right: 15px;
+    }
+
+    /* Contenido principal oscuro */
+    .main-content {
+      padding: 40px;
+      background: #121212;
+      min-height: 100vh;
+    }
+
+    .main-content .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .main-content .header h1 {
+      font-size: 28px;
+      color: #ff8c00;
+    }
+
+    .main-content .header input {
+      padding: 10px;
+      width: 300px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      background: #333;
+    }
+
+    /* Estilo de las tarjetas */
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      border-radius: 8px;
+      background: #1e1e1e;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+    }
+
+    .card .image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      background-color: #000;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card .content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card .title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #ff8c00;
+    }
+
+    .card .desc {
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: #bdbdbd;
+    }
+
+    .card .action {
+      align-self: flex-start;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: #ff8c00;
+      color: #121212;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .card .action:hover {
+      background: #ffa733;
+    }
+  </style>
+</head>
+<body>
+  <!-- Botón Offcanvas -->
+  <button class="btn btn-warning m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar Offcanvas -->
+  <div class="offcanvas offcanvas-start" id="offcanvasMenu" tabindex="-1">
+    <div class="logo-container">
+      <img src="https://es.uni24k.com/media/logos/logo_school_ubf6e84cc_13283000.png" alt="Logo">
+      <div class="logo">SEPRENET</div>
+    </div>
+    <ul class="nav flex-column px-3">
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Inicio</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-bell"></i> Notificaciones</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-file-alt"></i> Documentos</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Mi Cuenta</a></li>
+    </ul>
+  </div>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <div class="header">
+      <h1>Proyectos Nuevos</h1>
+      <input type="text" placeholder="Buscar un proyecto...">
+    </div>
+    <div class="projects">
+      <!-- Ejemplo de tarjetas -->
+      <div class="card">
+        <div class="image" style="background-image: url('https://www.doblemente.com/wp-content/uploads/2016/03/posicionamiento.jpg');"></div>
+        <div class="content">
+          <span class="title">Sistema de Reservas</span>
+          <p class="desc">Gestión completa de espacios de trabajo.</p>
+          <a class="action" href="#">Ver más</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú con Tarjetas</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    /* General Reset */
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1a1a26, #0e0e18);
+      color: #d6d6d6;
+      margin: 0;
+    }
+
+    /* Offcanvas Sidebar */
+    .offcanvas {
+      background: #212131;
+      color: #d6d6d6;
+      min-height: 100vh;
+    }
+
+    .offcanvas .logo-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px;
+    }
+
+    .offcanvas .logo-container img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .offcanvas .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #a54242;
+    }
+
+    .offcanvas .nav-link {
+      color: #d6d6d6;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 12px 20px;
+      text-decoration: none;
+      display: block;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .offcanvas .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: #ff4040;
+      transition: width 0.3s ease;
+    }
+
+    .offcanvas .nav-link:hover:after {
+      width: 100%;
+    }
+
+    .offcanvas .nav-link:hover {
+      color: #fff;
+    }
+
+    .offcanvas .nav-link i {
+      margin-right: 15px;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 40px;
+      background: url('https://sic.cultura.gob.mx/images/119479') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+
+    .main-content:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 0;
+    }
+
+    .main-content .header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .main-content .header h1 {
+      font-size: 36px;
+      color: #a0d9ff;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .main-content .header input {
+      padding: 12px;
+      width: 300px;
+      border: none;
+      border-radius: 4px;
+      background: #2b2b38;
+      color: #d6d6d6;
+      font-size: 14px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card .image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      background-color: #eee;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card .content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card .title {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .card .desc {
+      color: #d6d6d6;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .card .action {
+      align-self: flex-start;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: #2563eb;
+      color: #fff;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .card .action:hover {
+      background: #1d4ed8;
+    }
+
+    /* Responsiveness */
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px;
+      }
+      .main-content .header input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Offcanvas Button -->
+  <button class="btn btn-dark m-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Offcanvas Menu -->
+  <div class="offcanvas offcanvas-start" id="offcanvasMenu" tabindex="-1">
+    <div class="logo-container">
+      <img src="https://es.uni24k.com/media/logos/logo_school_ubf6e84cc_13283000.png" alt="Logo">
+      <div class="logo">SEPRENET</div>
+    </div>
+    <ul class="nav flex-column px-3">
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Inicio</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-bell"></i> Notificaciones</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-file-alt"></i> Documentos</a></li>
+      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Mi Cuenta</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="header">
+      <h1>Proyectos Nuevos</h1>
+      <input type="text" placeholder="Buscar un proyecto...">
+    </div>
+    <div class="projects">
+      <!-- Tarjetas -->
+      <div class="card">
+        <div class="image" style="background-image: url('https://www.doblemente.com/wp-content/uploads/2016/03/posicionamiento.jpg');"></div>
+        <div class="content">
+          <span class="title">Sistema de Reservas</span>
+          <p class="desc">Gestión completa de espacios de trabajo.</p>
+          <a class="action" href="#">Ver más</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="image" style="background-image: url('https://img.computing.es/wp-content/uploads/2018/12/20122931/Redes-ciberseguridad.jpeg');"></div>
+        <div class="content">
+          <span class="title">Red de Monitoreo</span>
+          <p class="desc">Supervisión avanzada con cámaras inteligentes.</p>
+          <a class="action" href="#">Ver más</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="image" style="background-image: url('https://www.esan.edu.pe/images/blog/2015/08/10/4-modelos-evaluar-proyectos-inversion-principal.jpg');"></div>
+        <div class="content">
+          <span class="title">Evaluación de Proyectos</span>
+          <p class="desc">Plataforma para evaluar ideas innovadoras.</p>
+          <a class="action" href="#">Ver más</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
