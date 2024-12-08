@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTYV - Inicio de Sesión</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #0d1117;
+      position: relative;
+    }
+
+    .container {
+      text-align: center;
+      background-color: rgba(13, 17, 23, 0.9);
+      padding: 30px;
+      border-radius: 10px;
+      width: 350px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    .logo-top {
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #58a6ff;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .subtitulo {
+      color: #58a6ff;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .input-container {
+      margin: 10px 0;
+      position: relative;
+    }
+
+    .input-container input {
+      width: 100%;
+      padding: 10px 40px;
+      border: 2px solid #58a6ff;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: transparent;
+      color: #c9d1d9;
+    }
+
+    .input-container img {
+      position: absolute;
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%);
+      height: 20px;
+    }
+
+    .btn-ingresar {
+      display: inline-block;
+      background-color: #58a6ff;
+      color: #0d1117;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn-ingresar:hover {
+      background-color: #1f6feb;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Contenedor principal de inicio de sesión -->
+  <div class="container">
+    <!-- Logo del Tecnológico arriba del título -->
+    <img src="https://matehuala.tecnm.mx/SEPRET/Assets/img/favicon.png" alt="Logo Tecnológico" class="logo-top">
+    <h1>GTYV</h1>
+    <p class="subtitulo">Iniciar sesión</p>
+
+    <div class="input-container">
+      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" alt="Icono Usuario">
+      <input type="text" id="usuario" placeholder="Usuario">
+    </div>
+
+    <div class="input-container">
+      <img src="https://cdn-icons-png.flaticon.com/512/3064/3064155.png" alt="Icono Contraseña">
+      <input type="password" id="contrasena" placeholder="Contraseña">
+    </div>
+
+    <button class="btn-ingresar" onclick="validarLogin()">Ingresar</button>
+  </div>
+
+  <script>
+    function validarLogin() {
+      const usuario = document.getElementById('usuario').value;
+      const contrasena = document.getElementById('contrasena').value;
+
+      // Aquí establecemos el usuario y la contraseña predeterminados
+      const usuarioCorrecto = 'Admin';
+      const contrasenaCorrecta = 'abc123';
+
+      // Verificamos si las credenciales son correctas
+      if (usuario === usuarioCorrecto && contrasena === contrasenaCorrecta) {
+        // Redirigimos al archivo GTYV.html si las credenciales son correctas
+        window.location.href = 'GTYV.html';
+      } else {
+        alert('Usuario o contraseña incorrectos');
+      }
+    }
+  </script>
+</body>
+</html>
+
