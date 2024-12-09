@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEPRET - Gestión de Proyectos</title>
     <style>
-        /* General Styles */
         body {
             margin: 0;
             font-family: 'Arial', sans-serif;
@@ -18,7 +17,7 @@
             text-decoration: none;
         }
 
-        /* Menu Button */
+        /* Botón de Menú */
         .menu-button {
             position: fixed;
             top: 20px;
@@ -40,7 +39,7 @@
             fill: white;
         }
 
-        /* Side Menu */
+        /* Menú lateral */
         .menu {
             position: fixed;
             top: 0;
@@ -74,7 +73,7 @@
             color: #58a6ff;
         }
 
-        /* Content */
+        /* Contenido principal */
         .content {
             padding: 40px 20px;
         }
@@ -89,7 +88,7 @@
             color: #58a6ff;
         }
 
-        /* Card Styles */
+        /* Estilos de las tarjetas */
         .card {
             background-color: rgba(13, 17, 23, 0.9);
             border-radius: 10px;
@@ -113,7 +112,7 @@
             color: #58a6ff;
         }
 
-        /* Form Styles */
+        /* Estilos del formulario */
         form {
             background-color: rgba(13, 17, 23, 0.9);
             padding: 20px;
@@ -146,7 +145,7 @@
             background-color: #1f6feb;
         }
 
-        /* Close button (Tacha) */
+        /* Botón para cerrar (X) */
         .close-button {
             position: absolute;
             top: 10px;
@@ -162,7 +161,7 @@
             color: #58a6ff;
         }
 
-        /* Modal Styles */
+        /* Modal de confirmación */
         .modal {
             display: none;
             position: fixed;
@@ -208,14 +207,14 @@
 </head>
 <body>
 
-    <!-- Botón de Menú -->
+    <!-- Botón para abrir el menú -->
     <button class="menu-button" onclick="toggleMenu()">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M3 6h18M3 12h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
     </button>
 
-    <!-- Menú Lateral -->
+    <!-- Menú lateral -->
     <div class="menu" id="menu">
         <div class="menu-items">
             <div class="logo">
@@ -233,13 +232,13 @@
             <h2>Subir Proyecto de Residencias</h2>
         </div>
 
-        <!-- Tarjeta para mostrar el formulario -->
+        <!-- Tarjeta para abrir el formulario -->
         <div class="card" id="upload-card" onclick="toggleForm()">
             <span class="icon">+</span>
             <p style="color: #fff; font-size: 1.2rem; margin-left: 10px;">Subir Proyecto de Residencias</p>
         </div>
 
-        <!-- Formulario de Subida de Archivos y Datos del Proyecto -->
+        <!-- Formulario de subida de proyecto -->
         <div id="upload-section" style="display: none;">
             <button class="close-button" onclick="closeForm()">×</button>
             <form action="subir_proyecto.php" method="POST" enctype="multipart/form-data" id="upload-form">
@@ -277,31 +276,35 @@
     </div>
 
     <script>
+        // Función para abrir y cerrar el menú
         function toggleMenu() {
             const menu = document.getElementById('menu');
             menu.classList.toggle('open');
         }
 
+        // Función para abrir el formulario
         function toggleForm() {
             const uploadSection = document.getElementById('upload-section');
             uploadSection.style.display = 'block';
         }
 
+        // Función para cerrar el formulario
         function closeForm() {
             const uploadSection = document.getElementById('upload-section');
             uploadSection.style.display = 'none';
         }
 
+        // Enviar formulario y mostrar modal
         document.getElementById('upload-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            // Aquí puedes agregar lógica para enviar el formulario al servidor
+            event.preventDefault();  // Evita que el formulario se envíe por defecto
             document.getElementById('modal').style.display = 'block';
+            document.getElementById('upload-section').style.display = 'none';  // Cerrar formulario después de enviar
         });
 
+        // Cerrar modal
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
         }
     </script>
-
 </body>
 </html>
