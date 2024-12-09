@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEPRET - Gestión de Proyectos</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* Menu Button */
+        .menu-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .menu-button svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        /* Side Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: rgba(13, 17, 23, 0.95);
+            padding: 20px;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            transition: left 0.3s ease;
+        }
+
+        .menu.open {
+            left: 0;
+        }
+
+        .menu .menu-items a {
+            display: block;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            background-color: transparent;
+            transition: background-color 0.3s, color 0.3s;
+            color: white;
+        }
+
+        .menu .menu-items a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #58a6ff;
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            color: #58a6ff;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: rgba(13, 17, 23, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .card .icon {
+            font-size: 3rem;
+            color: #58a6ff;
+        }
+
+        /* Form Styles */
+        form {
+            background-color: rgba(13, 17, 23, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #fff;
+        }
+
+        button[type="submit"] {
+            background-color: #58a6ff;
+            color: #0d1117;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #1f6feb;
+        }
+
+        /* Close button (Tacha) */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            color: #c9d1d9;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: #58a6ff;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            background-color: rgba(13, 17, 23, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .modal h3 {
+            color: #58a6ff;
+            margin: 0 0 10px;
+        }
+
+        .modal p {
+            font-size: 0.95rem;
+            color: #c9d1d9;
+            margin: 10px 0;
+        }
+
+        .modal button {
+            display: block;
+            margin: 20px auto 0;
+            background-color: #58a6ff;
+            color: #0d1117;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .modal button:hover {
+            background-color: #1f6feb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón de Menú -->
+    <button class="menu-button" onclick="toggleMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M3 6h18M3 12h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <!-- Menú Lateral -->
+    <div class="menu" id="menu">
+        <div class="menu-items">
+            <div class="logo">
+                <img src="https://matehuala.tecnm.mx/SEPRET/Assets/img/favicon.png" alt="Logo SEPRET">
+                <h2>SEPRET</h2>
+            </div>
+            <a href="GTYV.html">Banco de Proyectos</a>
+            <a href="Subir archivos.html">Subir Archivos</a>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content" id="content">
+        <div class="header">
+            <h2>Subir Proyecto de Residencias</h2>
+        </div>
+
+        <!-- Tarjeta para mostrar el formulario -->
+        <div class="card" id="upload-card" onclick="toggleForm()">
+            <span class="icon">+</span>
+            <p style="color: #fff; font-size: 1.2rem; margin-left: 10px;">Subir Proyecto de Residencias</p>
+        </div>
+
+        <!-- Formulario de Subida de Archivos y Datos del Proyecto -->
+        <div id="upload-section" style="display: none;">
+            <button class="close-button" onclick="closeForm()">×</button>
+            <form action="subir_proyecto.php" method="POST" enctype="multipart/form-data" id="upload-form">
+                <label for="empresa">Nombre de la Empresa:</label>
+                <input type="text" id="empresa" name="empresa" required placeholder="Ingrese el nombre de la empresa">
+
+                <label for="contacto">Nombre del Contacto de la Empresa:</label>
+                <input type="text" id="contacto" name="contacto" required placeholder="Ingrese el nombre del contacto">
+
+                <label for="proyecto">Nombre del Proyecto:</label>
+                <input type="text" id="proyecto" name="proyecto" required placeholder="Ingrese el nombre del proyecto">
+
+                <label for="descripcion">Descripción del Proyecto:</label>
+                <textarea id="descripcion" name="descripcion" rows="4" required placeholder="Ingrese una descripción breve del proyecto"></textarea>
+
+                <label for="fecha_inicio">Fecha de Inicio del Proyecto:</label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+
+                <label for="fecha_fin">Fecha de Finalización del Proyecto:</label>
+                <input type="date" id="fecha_fin" name="fecha_fin" required>
+
+                <label for="archivo">Subir Archivo:</label>
+                <input type="file" id="archivo" name="archivo" required>
+
+                <button type="submit">Subir Proyecto</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para confirmación -->
+    <div id="modal" class="modal">
+        <h3>¡Éxito!</h3>
+        <p>El proyecto ha sido subido correctamente.</p>
+        <button onclick="closeModal()">Cerrar</button>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("menu").classList.toggle("open");
+        }
+
+        function toggleForm() {
+            const formSection = document.getElementById("upload-section");
+            formSection.style.display = formSection.style.display === "none" ? "block" : "none";
+        }
+
+        function closeForm() {
+            document.getElementById("upload-section").style.display = "none";
+        }
+
+        function closeModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+    </script>
+</body>
+</html>
+
