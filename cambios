@@ -1,48 +1,307 @@
-// Configuración de la conexión con PDO para SQL Server
-$dsn = "sqlsrv:Server=$servername;Database=$dbname"; // DSN para SQL Server
-$options = array(
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Manejo de excepciones
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Modo de obtención de resultados
-);
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEPRET - Gestión de Proyectos</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
 
-// Crear conexión
-try {
-    $conn = new PDO($dsn, $username, $password, $options);
-} catch (PDOException $e) {
-    die("Conexión fallida: " . $e->getMessage());
-}
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
 
-// Verificar si los datos fueron enviados
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Obtener los datos del formulario
-    $nombre_empresa = $_POST['nombre_empresa'];
-    $contacto_empresa = $_POST['contacto_empresa'];
-    $nombre_proyecto = $_POST['nombre_proyecto'];
-    $descripcion = $_POST['descripcion'];
-    $fecha_inicio = $_POST['fecha_inicio'];
-    $fecha_fin = $_POST['fecha_fin'];
-    $archivo = $_POST['archivo']; // Si estás subiendo un archivo, este es el nombre del campo del formulario
+        /* Menu Button */
+        .menu-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
 
-    // Preparar la consulta SQL para insertar los datos
-    $sql = "INSERT INTO Proyectos (nombre_empresa, contacto_empresa, nombre_proyecto, descripcion, fecha_inicio, fecha_fin, archivo) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+        .menu-button svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
 
-    try {
-        // Preparar y ejecutar la sentencia
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$nombre_empresa, $contacto_empresa, $nombre_proyecto, $descripcion, $fecha_inicio, $fecha_fin, $archivo]);
+        /* Side Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: rgba(13, 17, 23, 0.95);
+            padding: 20px;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            transition: left 0.3s ease;
+        }
 
-        // Respuesta exitosa
-        echo json_encode(['success' => true, 'message' => 'Datos insertados correctamente']);
-    } catch (PDOException $e) {
-        // Respuesta de error
-        echo json_encode(['success' => false, 'message' => 'Error al insertar datos: ' . $e->getMessage()]);
-    }
-    
-    // Cerrar la conexión (aunque PDO se cierra automáticamente cuando se destruye el objeto)
-    $conn = null;
-} else {
-    // Si no se hizo una petición POST
-    echo json_encode(['success' => false, 'message' => 'Método no permitido']);
-}
-?>
+        .menu.open {
+            left: 0;
+        }
+
+        .menu .menu-items a {
+            display: block;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            background-color: transparent;
+            transition: background-color 0.3s, color 0.3s;
+            color: white;
+        }
+
+        .menu .menu-items a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #58a6ff;
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            color: #58a6ff;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: rgba(13, 17, 23, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .card .icon {
+            font-size: 3rem;
+            color: #58a6ff;
+        }
+
+        /* Form Styles */
+        form {
+            background-color: rgba(13, 17, 23, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #fff;
+        }
+
+        button[type="submit"] {
+            background-color: #58a6ff;
+            color: #0d1117;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #1f6feb;
+        }
+
+        /* Close button (Tacha) */
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            color: #c9d1d9;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: #58a6ff;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            background-color: rgba(13, 17, 23, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .modal h3 {
+            color: #58a6ff;
+            margin: 0 0 10px;
+        }
+
+        .modal p {
+            font-size: 0.95rem;
+            color: #c9d1d9;
+            margin: 10px 0;
+        }
+
+        .modal button {
+            display: block;
+            margin: 20px auto 0;
+            background-color: #58a6ff;
+            color: #0d1117;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .modal button:hover {
+            background-color: #1f6feb;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón de Menú -->
+    <button class="menu-button" onclick="toggleMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M3 6h18M3 12h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <!-- Menú Lateral -->
+    <div class="menu" id="menu">
+        <div class="menu-items">
+            <div class="logo">
+                <img src="https://matehuala.tecnm.mx/SEPRET/Assets/img/favicon.png" alt="Logo SEPRET">
+                <h2>SEPRET</h2>
+            </div>
+            <a href="GTYV.html">Banco de Proyectos</a>
+            <a href="Subir archivos.html">Subir Archivos</a>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content" id="content">
+        <div class="header">
+            <h2>Subir Proyecto de Residencias</h2>
+        </div>
+
+        <!-- Tarjeta para mostrar el formulario -->
+        <div class="card" id="upload-card" onclick="toggleForm()">
+            <span class="icon">+</span>
+            <p style="color: #fff; font-size: 1.2rem; margin-left: 10px;">Subir Proyecto de Residencias</p>
+        </div>
+
+        <!-- Formulario de Subida de Archivos y Datos del Proyecto -->
+        <div id="upload-section" style="display: none;">
+            <button class="close-button" onclick="closeForm()">×</button>
+            <form action="subir_proyecto.php" method="POST" enctype="multipart/form-data" id="upload-form">
+                <label for="empresa">Nombre de la Empresa:</label>
+                <input type="text" id="empresa" name="empresa" required placeholder="Ingrese el nombre de la empresa">
+
+                <label for="contacto">Nombre del Contacto de la Empresa:</label>
+                <input type="text" id="contacto" name="contacto" required placeholder="Ingrese el nombre del contacto">
+
+                <label for="proyecto">Nombre del Proyecto:</label>
+                <input type="text" id="proyecto" name="proyecto" required placeholder="Ingrese el nombre del proyecto">
+
+                <label for="descripcion">Descripción del Proyecto:</label>
+                <textarea id="descripcion" name="descripcion" required placeholder="Ingrese una breve descripción"></textarea>
+
+                <label for="fecha_inicio">Fecha de Inicio:</label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+
+                <label for="fecha_fin">Fecha de Fin:</label>
+                <input type="date" id="fecha_fin" name="fecha_fin" required>
+
+                <label for="file">Adjuntar Archivo:</label>
+                <input type="file" id="file" name="file" required>
+
+                <button type="submit">Subir Proyecto</button>
+            </form>
+        </div>
+
+        <!-- Modal de Confirmación -->
+        <div id="modal" class="modal">
+            <h3>¡Proyecto Subido Exitosamente!</h3>
+            <p>Gracias por subir el proyecto de residencia. Nuestro equipo se pondrá en contacto pronto.</p>
+            <button onclick="closeModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu');
+            menu.classList.toggle('open');
+        }
+
+        function toggleForm() {
+            const uploadSection = document.getElementById('upload-section');
+            uploadSection.style.display = 'block';
+        }
+
+        function closeForm() {
+            const uploadSection = document.getElementById('upload-section');
+            uploadSection.style.display = 'none';
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Aquí puedes agregar lógica para enviar el formulario al servidor
+            document.getElementById('modal').style.display = 'block';
+        });
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
