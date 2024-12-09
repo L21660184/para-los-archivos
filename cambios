@@ -1,0 +1,71 @@
+<?php
+// Habilitar la depuración de errores
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Configuración de la base de datos
+$servidor = "proyecto/PALE";
+$usuario = "sa";
+$password = "Pale123456789";
+$base_datos = "Residencias";
+
+// Crear conexión
+$conn = new mysqli($servidor, $usuario, $password, $base_datos);
+
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+echo "Conexión exitosa<br>";
+
+// Depurar los datos recibidos
+echo "<h3>Datos recibidos:</h3>";
+var_dump($_POST);
+var_dump($_FILES);
+echo "<br>";
+
+// Verificar que se hayan enviado todos los datos esperados
+if (!isset($_POST['empresa'], $_POST['contacto'], $_POST['proyecto'], $_POST['descripcion'], $_POST['fecha_inicio'], $_POST['fecha_fin'], $_FILES['archivo'])) {
+    die("Faltan datos del formulario. Revisa que todos los campos estén completos.");
+}
+
+// Obtener datos del formulario
+$empresa = $conn->real_escape_string($_POST['empresa']);
+$contacto = $conn->real_escape_string($_POST['contacto']);
+$proyecto = $conn->real_escape_string($_POST['proyecto']);
+$descripcion = $conn->real_escape_string($_POST['descripcion']);
+$fecha_inicio = $conn->real_escape_string($_POST['fecha_inicio']);
+$fecha_fin = $conn->real_escape_string($_POST['fecha_fin']);
+
+// Procesar archivo subido
+$directorio_subida = "uploads/";
+if (!file_exists($directorio_subida)) {
+    mkdir($directorio_subida, 0777, true); // Crear carpeta si no existe
+}
+
+$nombre_archivo = basename($_FILES['archivo']['name']);
+$ruta = $directorio_subida . $nombre_archivo;
+
+// Intentar mover el archivo subido
+if (!move_uploaded_file($_FILES['archivo']['tmp_name'], $ruta)) {
+    die("Error al subir el archivo. Verifica los permisos de la carpeta 'uploads/'.");
+}
+echo "Archivo subido exitosamente: " . $ruta . "<br>";
+
+// Insertar datos en la base de datos
+$sql = "INSERT INTO proyectos (empresa, contacto, proyecto, descripcion, fecha_inicio, fecha_fin, archivo) 
+        VALUES ('$empresa', '$contacto', '$proyecto', '$descripcion', '$fecha_inicio', '$fecha_fin', '$ruta')";
+
+echo "<h3>Consulta SQL generada:</h3><pre>$sql</pre><br>";
+
+// Ejecutar la consulta y verificar errores
+if ($conn->query($sql) === TRUE) {
+    echo "Datos guardados correctamente en la base de datos.<br>";
+} else {
+    die("Error al guardar los datos: " . $conn->error);
+}
+
+// Redirigir al banco de proyectos
+header("Location: banco_de_proyectos.php");
+exit();
+?>
