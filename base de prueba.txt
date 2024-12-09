@@ -1,0 +1,96 @@
+create database ProyectoRES
+USE ProyectoRES; -- Asegúrate de estar en la base de datos correcta
+CREATE TABLE Usuarios (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    usuario NVARCHAR(50) NOT NULL,
+    password NVARCHAR(255) NOT NULL
+);
+
+-- Agregar un usuario de prueba
+INSERT INTO Usuarios (usuario, password)
+VALUES ('admin', 'admin123'); -- Cambia estos valores según tus necesidades
+
+CREATE TABLE Proyectos (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    nombre NVARCHAR(255),
+    estado NVARCHAR(50), -- 'Pendiente', 'Vigente', 'Finalizado'
+    descripcion NVARCHAR(MAX),
+    fecha_inicio DATE,
+    fecha_fin DATE
+);
+
+CREATE TABLE Documentos (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    nombre NVARCHAR(255) NOT NULL,
+    ruta NVARCHAR(255) NOT NULL
+);
+
+-- Ejemplo de datos
+INSERT INTO Documentos (nombre, ruta) VALUES ('Documento1.pdf', 'ruta/Documento1.pdf');
+
+CREATE TABLE Bitacora (
+    usuario_id INT PRIMARY KEY,
+    etapa_actual INT DEFAULT 0
+);
+
+-- Simulación de un usuario
+INSERT INTO Bitacora (usuario_id, etapa_actual) VALUES (1, 0);
+
+-- Crear la tabla de Proyectos (si no existe)
+CREATE TABLE Proyectos2 (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    nombre_proyecto VARCHAR(255),
+    descripcion TEXT,
+    estado INT -- 0 = Pendiente, 1 = En progreso, 2 = Finalizado
+);
+
+-- Insertar algunos registros de prueba
+INSERT INTO Proyectos2(nombre_proyecto, descripcion, estado)
+VALUES 
+('Proyecto de Residencias A', 'Descripción del proyecto A', 1),
+('Proyecto de Residencias B', 'Descripción del proyecto B', 0),
+('Proyecto de Residencias C', 'Descripción del proyecto C', 2);
+
+-- Crear la tabla de Documentos
+CREATE TABLE Documentos1 (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    proyecto_id INT,
+    nombre_documento VARCHAR(255),
+    fecha_carga DATETIME,
+    FOREIGN KEY (proyecto_id) REFERENCES Proyectos(id)
+);
+
+-- Insertar algunos documentos de prueba
+CREATE TABLE Documentos2 (
+    id INT PRIMARY KEY IDENTITY,
+    proyecto_id INT,
+    nombre_documento VARCHAR(255),
+    fecha_carga DATETIME
+);
+
+INSERT INTO Documentos2 (proyecto_id, nombre_documento, fecha_carga)
+VALUES 
+(1, 'Reporte Final 1', CONVERT(DATETIME, '2024-11-15', 120)),
+(2, 'Reporte Final 2', CONVERT(DATETIME, '2024-12-01', 120)),
+(3, 'Reporte Inicial', CONVERT(DATETIME, '2024-10-30', 120));
+
+
+
+
+
+-- Crear la tabla de Estadísticas (para seguimiento de etapas)
+CREATE TABLE Estadisticas (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    proyecto_id INT,
+    archivo_1_subido BIT, -- 1 = Subido, 0 = No subido
+    archivo_2_subido BIT,
+    archivo_3_subido BIT,
+    FOREIGN KEY (proyecto_id) REFERENCES Proyectos(id)
+);
+
+-- Insertar registros de prueba para las estadísticas
+INSERT INTO Estadisticas (archivo_1_subido, archivo_2_subido, archivo_3_subido)
+VALUES 
+( 1, 0, 0), -- Proyecto A: solo archivo 1 subido
+( 1, 1, 0), -- Proyecto B: archivos 1 y 2 subidos
+( 1, 1, 1);  -- Proyecto C: todos los archivos subidos
