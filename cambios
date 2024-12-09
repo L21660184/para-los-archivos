@@ -9,12 +9,13 @@ $usuario = "sa";
 $password = "Pale123456789";
 $base_datos = "Residencias";
 
-// Crear conexión
-$conn = new mysqli($servidor, $usuario, $password, $base_datos);
+// Conexión a SQL Server
+$connectionInfo = array("Database" => $base_datos, "UID" => $usuario, "PWD" => $password);
+$conn = sqlsrv_connect($servidor, $connectionInfo);
 
 // Verificar conexión
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
+if ($conn === false) {
+    die(print_r(sqlsrv_errors(), true));
 }
 echo "Conexión exitosa<br>";
 
@@ -30,12 +31,12 @@ if (!isset($_POST['empresa'], $_POST['contacto'], $_POST['proyecto'], $_POST['de
 }
 
 // Obtener datos del formulario
-$empresa = $conn->real_escape_string($_POST['empresa']);
-$contacto = $conn->real_escape_string($_POST['contacto']);
-$proyecto = $conn->real_escape_string($_POST['proyecto']);
-$descripcion = $conn->real_escape_string($_POST['descripcion']);
-$fecha_inicio = $conn->real_escape_string($_POST['fecha_inicio']);
-$fecha_fin = $conn->real_escape_string($_POST['fecha_fin']);
+$empresa = $_POST['empresa'];
+$contacto = $_POST['contacto'];
+$proyecto = $_POST['proyecto'];
+$descripcion = $_POST['descripcion'];
+$fecha_inicio = $_POST['fecha_inicio'];
+$fecha_fin = $_POST['fecha_fin'];
 
 // Procesar archivo subido
 $directorio_subida = "uploads/";
@@ -54,16 +55,20 @@ echo "Archivo subido exitosamente: " . $ruta . "<br>";
 
 // Insertar datos en la base de datos
 $sql = "INSERT INTO proyectos (empresa, contacto, proyecto, descripcion, fecha_inicio, fecha_fin, archivo) 
-        VALUES ('$empresa', '$contacto', '$proyecto', '$descripcion', '$fecha_inicio', '$fecha_fin', '$ruta')";
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-echo "<h3>Consulta SQL generada:</h3><pre>$sql</pre><br>";
+$params = array($empresa, $contacto, $proyecto, $descripcion, $fecha_inicio, $fecha_fin, $ruta);
+$stmt = sqlsrv_query($conn, $sql, $params);
 
-// Ejecutar la consulta y verificar errores
-if ($conn->query($sql) === TRUE) {
-    echo "Datos guardados correctamente en la base de datos.<br>";
-} else {
-    die("Error al guardar los datos: " . $conn->error);
+// Verificar la ejecución de la consulta
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
 }
+
+echo "Datos guardados correctamente en la base de datos.<br>";
+
+// Cerrar conexión
+sqlsrv_close($conn);
 
 // Redirigir al banco de proyectos
 header("Location: banco_de_proyectos.php");
